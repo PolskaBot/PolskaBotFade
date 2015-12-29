@@ -29,12 +29,6 @@ package com.muzari.polskabot.fade
 			stageTwoDecode = new RC4();
 		}
 		
-		private function setSecretKey(param1:ByteArray):void
-		{
-			stageTwoEncode.init(param1);
-			stageTwoDecode.init(param1);
-		}
-		
 		public function initStageOne(param1:ByteArray):void
 		{
 			this.stageOne.load(param1);
@@ -81,7 +75,8 @@ package com.muzari.polskabot.fade
 				_loc7_ = _loc4_.modPow(importantBigInteger, secondCode);
 				secretKey = new ByteArray();
 				_loc7_.toByteArray().readBytes(secretKey, 0, 16);
-				this.setSecretKey(secretKey);
+				stageTwoEncode.init(secretKey);
+				stageTwoDecode.init(secretKey);
 				stageTwoActive = true;
 			}
 			catch (error:Error)
