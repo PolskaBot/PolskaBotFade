@@ -2,7 +2,9 @@ package com.muzari.polskabot.fade
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.events.TimerEvent;
+	import flash.utils.Dictionary;
 	import flash.utils.Timer;
 	import flash.external.ExternalInterface;
 	
@@ -14,6 +16,8 @@ package com.muzari.polskabot.fade
 	{
 		
 		private var readyTimer:Timer;
+		
+		private var clients:Object = new Object();
 		
 		public function Main()
 		{
@@ -49,9 +53,76 @@ package com.muzari.polskabot.fade
 		
 		private function addCallbacks():void
 		{
-			// TODO: Setup callbacks
+			// Connection
+			ExternalInterface.addCallback("connect", connectClient);
+			ExternalInterface.addCallback("disconnect", disconnectClient);
 			
+			// Initialization
+			ExternalInterface.addCallback("initStageOne", initStageOne);
+			ExternalInterface.addCallback("generateKey", generateKey);
+			ExternalInterface.addCallback("initStageTwo", initStageTwo);
+			
+			// Encoding
+			ExternalInterface.addCallback("encode", encode);
+			ExternalInterface.addCallback("decode", decode);
+			
+			// Notify that Fade is ready
 			ExternalInterface.call("callbacksReady");
+		}
+		
+		private function decode(identifier:String, input:String):String
+		{
+			if (clients[identifier])
+				return (clients[identifier] as Client).decode(input);
+			return "";
+		}
+		
+		private function encode(identifier:String, input:String):String
+		{
+			if (clients[identifier])
+				return (clients[identifier] as Client).encode(input);
+			return "";
+		}
+		
+		private function initStageTwo(identifier:String, code:String):void
+		{
+			if (clients[identifier])
+				(clients[identifier] as Client).initStageTwo(code);
+		}
+		
+		private function generateKey(identifier:String):String
+		{
+			if (clients[identifier])
+				return (clients[identifier] as Client).generateKey();
+			return "";
+		}
+		
+		private function initStageOne(identifier:String, code:String):void
+		{
+			if (clients[identifier])
+			{
+				(clients[identifier] as Client).initStageOne(code);
+				
+				(clients[identifier] as Client).addEventListener(Event.ACTIVATE, function(e:Event):void
+				{
+					ExternalInterface.call("stageOneInitialized", identifier, true);
+				});
+				
+				(clients[identifier] as Client).addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void
+				{
+					ExternalInterface.call("stageOneInitialized", identifier, false);
+				});
+			}
+		}
+		
+		private function connectClient(identifier:String):void
+		{
+			clients[identifier] = new Client();
+		}
+		
+		private function disconnectClient(identifier:String):void
+		{
+			delete clients[identifier];
 		}
 	
 	}

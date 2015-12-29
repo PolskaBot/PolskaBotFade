@@ -48,6 +48,7 @@ package com.muzari.polskabot.fade
 		private final function handleError(e:IOErrorEvent):void
 		{
 			trace("Stage one wasn't initialized successfuly");
+			dispatchEvent(new Event(IOErrorEvent.IO_ERROR));
 		}
 		
 		public function decode(buffer:ByteArray):ByteArray
