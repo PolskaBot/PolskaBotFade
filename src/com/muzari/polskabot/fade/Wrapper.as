@@ -1,5 +1,7 @@
 package com.muzari.polskabot.fade
 {
+	import flash.system.SecurityDomain;
+	import flash.system.ApplicationDomain;
 	import flash.events.Event;
 	import flash.display.Shape;
 	import flash.display.Loader;
@@ -20,58 +22,63 @@ package com.muzari.polskabot.fade
 		
 		}
 		
-		public final function load(code:ByteArray):void
+		public final function load(param1:ByteArray):void
 		{
-			var loader:Loader = new Loader();
+			var _loc1_:Loader = new Loader();
+			var _loc2_:LoaderInfo = _loc1_.contentLoaderInfo;
+			_loc2_.addEventListener(Event.COMPLETE, this.handleAlgorithmLoadFinished);
+			_loc2_.addEventListener(IOErrorEvent.IO_ERROR, this.handleAlgorithmLoadIoError);
 			var loaderContext:LoaderContext = new LoaderContext();
-			var loaderInfo:LoaderInfo = loader.contentLoaderInfo;
-			
-			loaderInfo.addEventListener(Event.COMPLETE, handleError);
-			loaderInfo.addEventListener(IOErrorEvent.IO_ERROR, handleSuccess);
-			
-			loaderContext.allowLoadBytesCodeExecution = true;
-			loader.loadBytes(code, loaderContext);
+			loaderContext.allowCodeImport = true;
+			_loc1_.loadBytes(param1, loaderContext);
 		}
 		
-		private final function handleSuccess(e:Event = null):void
+		private final function handleAlgorithmLoadFinished(param1:Event = null):void
 		{
-			var loaderInfo:LoaderInfo = e.target as LoaderInfo;
-			
-			loaderInfo.removeEventListener(Event.COMPLETE, handleSuccess);
-			loaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, handleError);
-			
-			this._encoder = loaderInfo.content;
+			var _loc2_:LoaderInfo = param1.target as LoaderInfo;
+			_loc2_.removeEventListener(Event.COMPLETE, this.handleAlgorithmLoadFinished);
+			_loc2_.removeEventListener(IOErrorEvent.IO_ERROR, this.handleAlgorithmLoadIoError);
+			this._encoder = _loc2_.content;
 			this.activate();
 			dispatchEvent(new Event(Event.ACTIVATE));
 		}
 		
-		private final function handleError(e:IOErrorEvent):void
+		private final function handleAlgorithmLoadIoError(param1:IOErrorEvent):void
 		{
-			trace("Stage one wasn't initialized successfuly");
-			dispatchEvent(new Event(IOErrorEvent.IO_ERROR));
+			trace("Erorr while working on stageOne");
 		}
 		
-		public function decode(buffer:ByteArray):ByteArray
+		public function decode(param1:ByteArray):ByteArray
 		{
-			if (_activated)
+			if (this.isActivated())
 			{
-				return _encoder.decode(buffer);
+				return this._encoder.decode(param1);
 			}
-			return buffer;
+			return param1;
 		}
 		
-		public function encode(buffer:ByteArray):ByteArray
+		public function encode(param1:ByteArray):ByteArray
 		{
-			if (_activated)
+			if (this._activated)
 			{
-				return _encoder.encode(buffer);
+				return this._encoder.encode(param1);
 			}
-			return buffer;
+			return param1;
 		}
 		
-		private function activate():void
+		public function activate():void
 		{
-			_activated = true;
+			this._activated = true;
+		}
+		
+		public function deactivate():void
+		{
+			this._activated = false;
+		}
+		
+		public function isActivated():Boolean
+		{
+			return this._activated;
 		}
 	
 	}

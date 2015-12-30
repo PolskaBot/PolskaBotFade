@@ -93,7 +93,9 @@ package com.muzari.polskabot.fade
 		private function generateKey(identifier:String):String
 		{
 			if (clients[identifier])
+			{
 				return (clients[identifier] as Client).generateKey();
+			}
 			return "";
 		}
 		
@@ -101,8 +103,8 @@ package com.muzari.polskabot.fade
 		{
 			if (clients[identifier])
 			{
-				(clients[identifier] as Client).initStageOne(code);
 				
+				(clients[identifier] as Client).initStageOne(code);
 				(clients[identifier] as Client).addEventListener(Event.ACTIVATE, function(e:Event):void
 				{
 					ExternalInterface.call("stageOneInitialized", identifier, true);
@@ -112,6 +114,7 @@ package com.muzari.polskabot.fade
 				{
 					ExternalInterface.call("stageOneInitialized", identifier, false);
 				});
+				
 			}
 		}
 		
