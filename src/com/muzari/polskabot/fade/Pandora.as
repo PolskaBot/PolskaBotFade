@@ -37,6 +37,7 @@ package com.muzari.polskabot.fade
 		
 		public function generateObfuscationCallback():ByteArray
 		{
+			trace("Generating obfuscation callback");
 			var _local_5:int;
 			var _local_6:String;
 			var _local_1:String = new String();
@@ -55,6 +56,7 @@ package com.muzari.polskabot.fade
 			importantBigInteger = new BigInteger(_local_1, 16);
 			var _local_3:BigInteger = firstCode.modPow(importantBigInteger, secondCode);
 			var local3ToBytes:ByteArray = _local_3.toByteArray();
+			trace("Obfuscation callback generated, size " + local3ToBytes.length);
 			return local3ToBytes;
 		}
 		

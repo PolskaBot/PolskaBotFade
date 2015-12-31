@@ -80,7 +80,10 @@ package com.muzari.polskabot.fade
 		private function encode(identifier:String, input:String):String
 		{
 			if (clients[identifier])
-				return (clients[identifier] as Client).encode(input);
+			{
+				var output:String = (clients[identifier] as Client).encode(input);
+				return output;
+			}
 			return "";
 		}
 		
@@ -120,11 +123,13 @@ package com.muzari.polskabot.fade
 		
 		private function connectClient(identifier:String):void
 		{
+			trace("Client connected: " + identifier);
 			clients[identifier] = new Client();
 		}
 		
 		private function disconnectClient(identifier:String):void
 		{
+			trace("Client disconnected: " + identifier);
 			delete clients[identifier];
 		}
 	

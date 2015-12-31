@@ -24,17 +24,20 @@ package com.muzari.polskabot.fade
 		
 		public final function load(param1:ByteArray):void
 		{
+			trace("Size: " + param1.length);
 			var _loc1_:Loader = new Loader();
 			var _loc2_:LoaderInfo = _loc1_.contentLoaderInfo;
 			_loc2_.addEventListener(Event.COMPLETE, this.handleAlgorithmLoadFinished);
 			_loc2_.addEventListener(IOErrorEvent.IO_ERROR, this.handleAlgorithmLoadIoError);
 			var loaderContext:LoaderContext = new LoaderContext();
+			loaderContext.securityDomain = null;
 			loaderContext.allowCodeImport = true;
 			_loc1_.loadBytes(param1, loaderContext);
 		}
 		
 		private final function handleAlgorithmLoadFinished(param1:Event = null):void
 		{
+			trace("Loaded");
 			var _loc2_:LoaderInfo = param1.target as LoaderInfo;
 			_loc2_.removeEventListener(Event.COMPLETE, this.handleAlgorithmLoadFinished);
 			_loc2_.removeEventListener(IOErrorEvent.IO_ERROR, this.handleAlgorithmLoadIoError);
