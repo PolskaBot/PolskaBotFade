@@ -111,11 +111,13 @@ package com.muzari.polskabot.fade
 				(clients[identifier] as Client).addEventListener(Event.ACTIVATE, function(e:Event):void
 				{
 					ExternalInterface.call("stageOneInitialized", identifier, true);
+					e.currentTarget.removeEventListener(Event.ACTIVATE, arguments.callee);
 				});
 				
 				(clients[identifier] as Client).addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void
 				{
 					ExternalInterface.call("stageOneInitialized", identifier, false);
+					e.currentTarget.removeEventListener(IOErrorEvent.IO_ERROR, arguments.callee);
 				});
 				
 			}
