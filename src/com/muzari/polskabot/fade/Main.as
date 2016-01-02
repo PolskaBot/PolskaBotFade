@@ -58,6 +58,7 @@ package com.muzari.polskabot.fade
 			ExternalInterface.addCallback("disconnect", disconnectClient);
 			
 			// Initialization
+			ExternalInterface.addCallback("reset", reset);
 			ExternalInterface.addCallback("initStageOne", initStageOne);
 			ExternalInterface.addCallback("generateKey", generateKey);
 			ExternalInterface.addCallback("initStageTwo", initStageTwo);
@@ -68,6 +69,12 @@ package com.muzari.polskabot.fade
 			
 			// Notify that Fade is ready
 			ExternalInterface.call("callbacksReady");
+		}
+		
+		private function reset(identifier:String):void
+		{
+			if (clients[identifier])
+				(clients[identifier] as Client).reset();
 		}
 		
 		private function decode(identifier:String, input:String):String

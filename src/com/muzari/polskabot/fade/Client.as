@@ -20,6 +20,11 @@ package com.muzari.polskabot.fade
 		
 		}
 		
+		public function reset():void
+		{
+			_pandora = new Pandora();
+		}
+		
 		public function initStageOne(code:String):void
 		{
 			_pandora.initStageOne(Base64.decode(code));
